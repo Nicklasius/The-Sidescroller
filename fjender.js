@@ -1,14 +1,14 @@
 class Fjende {      // Classen med alle dens egenskaber
     constructor() {
-        this.r = 50;
+        this.r = 25;
         this.x = width;
-        this.y = height - random(140, 350);
+        this.y = height - random(240, 450);
         
     }
 
    // her kan vi få classen Fjende til at bevæge sig
     move() {
-        this.x -= 6 + speed;
+        this.x -= 14 + speed;
         
     }
     // viser billedet

@@ -1,22 +1,30 @@
 let ironman;
 let fjende = [];
 let skud = [];
-let iImg;
-let bImg;
+let kaktus = [];
 let time = 0;
+let timeC = 0;
 let speed = 0;
 let score = 0;
 let hits = false;
+let ramt = false;
 const col = [220,110,0];
 let menu = 0;
+//------Billeder---------------------------------------
 let img2;
 let img1; 
+let iImg;
+let bImg;
+let cImg;
+
+//------Funktioner-------------------------------------
 
 function preload() { // Bruges til at loade billiderne inden spillet så de loades ordentligt
 iImg = loadImage('libraries/ironman.png')
 bImg = loadImage('libraries/bird.png')
 img2 = loadImage('libraries/background.jpg')
 img1 = loadImage('libraries/scene.png');
+cImg = loadImage('libraries/kaktus.png');
 }
 
 function setup() {
@@ -27,21 +35,27 @@ function setup() {
 function resetGame() {  // functionen bruges til at resette gamet. Det nulstiller bare spillet uden at re-fresh siden
     ironman = new Ironman(); 
     fjende.length = 0;
+    kaktus.length = 0;
+    skud.length = 0;
     speed = 0;
     score = 0;
        
 }
 
 function keyPressed() { // Kalder jump functionen hvis ' ' (spacebar) trykkes ned
-    if (key == ' ') {
+    if (key == 'W') {
         ironman.jump();
+    }
+    if (key == ' ') {
+      skud.push(new Skud);
     }
     
 }
 
+
 function draw() {
     
-    print(mouseX, mouseY)
+    //print(mouseX, mouseY)
     background(255);
     fill(100, 210, 0);
     rect(50, 50, 200, 75);
@@ -72,6 +86,14 @@ function draw() {
 
     if (menu == 2) {
         background(img1);
+        for (let k of kaktus) {
+          k.show();
+          k.move();
+          if (ironman.hits(k)) {
+            console.log("SPIKED!");
+            menu = 3;
+          }
+        }
        
         for (let f of fjende) { // gør det nemmere at kalde Fjende classen
             f.move();
@@ -80,20 +102,42 @@ function draw() {
                 console.log("hit!")
                 menu = 3;
             }
-           }
+
+            
+        }
+        for (let s of skud) {
+          s.show();
+          s.move();
+          
+        }
+        for (let s of skud) {
+          for (let f of fjende) {
+            if (s.alive == false) {
+             // s.remove();
+            }
+            if (s.hits(f)) {
+              console.log("fjende ramt!");
+            }
+          }
+        }
     display();
     ironman.show();
     ironman.move();
     time += 1;
+    timeC += 1;
     score += 1;
-    speed += 0.001;
+    speed += 0.005;
     //hit = collideRectRect(this.)
-    if (random(1) < 0.01 && time > 100 ) { // laver et diceroll (chancen er 1 ud af 100, 60 gange i sekundet)
+    if (random(1) < 0.01 && time > 100 ) { // laver et diceroll (chancen er 1 ud af 100, 60 gange i sekundet, påbegyndes et sekund efter sidste spawn)
         fjende.push(new Fjende()); //laver en ny fjende i arrayet
         console.log("Ny fjende")
         time = 0;
        }
-       
+       if (random(1) < 0.05 && timeC > 200 ) { // laver et diceroll (chancen er 1 ud af 200, 60 gange i sekundet, påbegyndes 2 sekunder efter sidste spawn)
+        kaktus.push(new Kaktus()); //laver en ny kaktus i arrayet
+        console.log("Stikkende!")
+        timeC = 0;
+       }
 }
 // her vises end-screen hvis kravet opfyldes
 if (menu == 3) {
@@ -114,18 +158,6 @@ if (menu == 3) {
     
 
 }
-
-//if (score >  )
-
-// Gør at P starter spillet hvis spillet er stoppet
- //   if (keyIsDown(80) && started == false) {
-  //  Save()
-    //started = true;
-  //  resetGame()
-//
-//}
-
-
 }
 
 function display() {
