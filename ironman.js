@@ -26,4 +26,4 @@ class Ironman {     // Classen med alle dens egenskaber
     show() {
         image(iImg, this.x, this.y, 50, 50);
     }
-}
+} 
